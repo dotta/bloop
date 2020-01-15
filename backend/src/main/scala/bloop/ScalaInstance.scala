@@ -75,7 +75,7 @@ final class ScalaInstance private (
     attributedJars.hashCode()
   }
 
-  def supportsHydra: Boolean = compilerJar.getName().contains("-hydra")
+  def supportsHydra: Boolean = Option(compilerJar).map(_.getName().contains("-hydra")).getOrElse(false)
 }
 
 object ScalaInstance {

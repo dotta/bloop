@@ -452,6 +452,7 @@ abstract class BaseCompileSpec extends bloop.testing.BaseSuite {
       object Sources {
         val `Foo.scala` =
           """/Foo.scala
+            |package t
             |import Enrichments._
             |class Foo
           """.stripMargin
@@ -459,22 +460,26 @@ abstract class BaseCompileSpec extends bloop.testing.BaseSuite {
         // A dummy file to avoid surpassing the 50% changed sources and trigger a full compile
         val `Dummy.scala` =
           """/Dummy.scala
+            |package t
             |class Dummy
           """.stripMargin
 
         // A second dummy file
         val `Dummy2.scala` =
           """/Dummy2.scala
+            |package t
             |class Dummy2
           """.stripMargin
 
         val `Enrichments.scala` =
           """/Enrichments.scala
+            |package t
             |object Enrichments {}
           """.stripMargin
 
         val `Enrichments2.scala` =
           """/Enrichments.scala
+            |package t
             |object Enrichments {
             |  implicit class XtensionString(str: String) {
             |    def isGreeting: Boolean = str == "Hello world"
@@ -484,6 +489,7 @@ abstract class BaseCompileSpec extends bloop.testing.BaseSuite {
 
         val `Bar.scala` =
           """/Bar.scala
+            |package t
             |import Enrichments._
             |class Bar {
             |  val foo: Foo = new Foo
@@ -494,6 +500,7 @@ abstract class BaseCompileSpec extends bloop.testing.BaseSuite {
 
         val `Baz.scala` =
           """/Baz.scala
+            |package t
             |import Enrichments._
             |class Baz extends Bar
           """.stripMargin
@@ -517,8 +524,8 @@ abstract class BaseCompileSpec extends bloop.testing.BaseSuite {
 
       // Move `Bar.scala` from `B` to `A`; code still compiles
       Files.move(
-        `B`.srcFor("Bar.scala").underlying,
-        `A`.srcFor("Bar.scala", exists = false).underlying
+        `B`.srcFor("/Bar.scala").underlying,
+        `A`.srcFor("/Bar.scala", exists = false).underlying
       )
 
       val secondCompiledState = compiledState.compile(`B`)
